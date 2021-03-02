@@ -14,8 +14,9 @@ RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisbuild
 USER ${ISC_PACKAGE_MGRUSER}
 
 #COPY  Installer.cls .
-COPY  src src
+COPY src src
 COPY module.xml module.xml
+COPY test test
 COPY iris.script iris.script
 
 RUN iris start IRIS \
