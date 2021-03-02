@@ -10,7 +10,7 @@ Method TestToStream() As %Status
     Set line3 = 65
     Set stream = ##class(%Stream.GlobalCharacter).%New()
     Do ##class(IORedirect.Redirect).ToStream(stream)
-
+    
     Try {
         Write line1
         Write !,line2
@@ -20,6 +20,8 @@ Method TestToStream() As %Status
     } Catch (ex) {
         Set sc = ex.AsStatus()
     }
+    
+    Set $NAMESPACE = "USER"
     Do ##class(IORedirect.Redirect).RestoreIO()
 
     Do $$$AssertStatusOK(sc, "Redirect to stream")
@@ -140,7 +142,7 @@ Method TestIORedirect() As %Status
     Do $$$AssertEquals($Get(x), inputLine1)
 
     Kill ^||IORedirect
-    
+
     Quit sc
 }
 

@@ -1,7 +1,5 @@
 ROUTINE IORedirect [Type=INC]
 
- ; #Define OldStateData            %zIORedirect
-
 #Define OldIO                   %zIORedirect("OldIO")
 #Define OldMnemonic             %zIORedirect("OldMnemonic")
 #Define OldState                %zIORedirect("OldState")

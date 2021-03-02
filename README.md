@@ -40,7 +40,7 @@ Set ^UnitTestRoot = "/irisrun/repo/test/"
 Do ##class(%UnitTest.Manager).RunTest(,"/nodelete")
 ```
 
-Or 
+Or by zpm
 
 ```
 zpm "test iris-io-redirect"
@@ -127,3 +127,8 @@ Write !,"Output global ^||IORedirect : "
 ZWrite ^||IORedirect
 Kill ^||IORedirect
 ```
+
+### Across multiple namespaces
+
+IORedirect does not work if the process switch to another namespace for Reading\Writting.  
+You can easily fix this problem by adding a package mapping "IORedirect" on %ALL namespace.  

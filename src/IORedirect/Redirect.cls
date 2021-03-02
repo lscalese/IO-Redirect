@@ -9,6 +9,9 @@ Parameter OUTPUTGLOBAL = "IORedirect.OutputGlobal";
 
 Parameter INPUTSTREAM = "IORedirect.InputStream";
 
+/// Class this method to Enable the redirect<br/>
+/// OutputHandler must be a subclass name of IORedirect.OutputHandler<br/>
+/// If you want to handle Input, you can fill InputHandler with a subclass name of IORedirect.InputHandler<br/>
 ClassMethod RedirectIO(OutputHandler As %String, InputHandler As %String = "") As %Status
 {
     Set $$$OldIO = $IO
@@ -24,6 +27,7 @@ ClassMethod RedirectIO(OutputHandler As %String, InputHandler As %String = "") A
     Quit $$$OK
 }
 
+/// Stop the redirect and restore original IO Setting.<br/>
 ClassMethod RestoreIO() As %Status
 {
     Quit:'$Data($$$OldState) $$$OK
@@ -42,6 +46,7 @@ ClassMethod RestoreIO() As %Status
     Quit $$$OK
 }
 
+/// Enable Output Redirection to a Stream object.
 ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
@@ -49,6 +54,7 @@ ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter
     Quit $$$OK
 }
 
+/// Enable Output redirection to a global.
 ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}) As %Status
 {
     $$$QuitOnError(..RedirectIO(..#OUTPUTGLOBAL))
