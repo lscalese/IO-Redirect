@@ -106,7 +106,6 @@ Do inputStream.Rewind()
 Set line1 = "This is a test with Input and Output redirect"
 Set line2 = "Now, we READ something:"
 Set line3 = "Read line is : "
-Set line4 = inputLine1
 
 Set stream = ##class(%Stream.GlobalCharacter).%New()
 Kill ^||IORedirect
