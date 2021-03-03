@@ -77,7 +77,7 @@ Current available handlers are :
 | `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).SetStream(inputStream)` |
   
 &nbsp;  
-To disable IO Redirecto simply call : 
+To disable IO Redirect simply call : 
 
 ```
 Do ##class(IORedirect.Redirect).RestoreIO()
