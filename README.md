@@ -171,8 +171,23 @@ Write !,"Output global ^||IORedirect : "
 ZWrite ^||IORedirect
 Kill ^||IORedirect
 ```
+  
+## Source
+
+This development is inspired by [this community post](https://community.intersystems.com/post/rest-and-io-redirection).  
+
+## Troubleshoot
 
 ### Across multiple namespaces
 
 IORedirect does not work if the process switch to another namespace for Reading\Writting.  
 You can easily fix this problem by adding a package mapping "IORedirect" on %ALL namespace.  
+
+
+### \<PROTECT\>
+
+Noticed by [Timothy Leavitt](https://community.intersystems.com/user/timothy-leavitt)·  
+
+>One important note on I/O redirection, from the documentation:  
+>When a process performs I/O redirection, this redirection is performed using the user’s login $ROLES value, not the current $ROLES value.
+>In other words, if the I/O redirection is happening in a CSP application or privileged routine application context, in which matching or application roles are added that grant permissions on resources protecting assets the I/O functions need, you might get an unexpected <PROTECT> error, with roles seeming to disappear in wstr()/etc.
