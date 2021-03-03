@@ -1,4 +1,4 @@
-## IRIS-IO-REDIRECT
+## IO-REDIRECT
 
 This is a small library to handle IO redirect with ObjectScript.  
 
