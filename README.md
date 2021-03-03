@@ -31,6 +31,12 @@ $ docker-compose build
 $ docker-compose up -d
 ```
 
+### By ZPM
+
+```
+zpm "install io-redirect"
+```
+
 ## Run Unit Test
 
 In Iris Terminal:
@@ -43,7 +49,7 @@ Do ##class(%UnitTest.Manager).RunTest(,"/nodelete")
 Or by zpm
 
 ```
-zpm "test iris-io-redirect"
+zpm "test io-redirect"
 ```
 
 ## How It Works
