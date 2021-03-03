@@ -73,7 +73,7 @@ Current available handlers are :
 | Handlers | Type | Description | Setup |
 | -------- | ---- | ----------- | ----- |
 | `IORedirect.OutputStream` | Output | Redirect Output to a stream | Set output stream with `Do ##class(IORedirect.OutputStream).SetStream(stream)` |
-| `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : `Do ##class(IORedirect.OutputGlobal).SetRedirectLocation($Name(^\|\|IORedirect))` |
+| `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : `Do ##class(IORedirect.OutputGlobal).SetRedirectLocation($Name(^||IORedirect))` |
 | `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).SetStream(inputStream)` |
   
 &nbsp;  
