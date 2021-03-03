@@ -5,13 +5,13 @@ Class IORedirect.InputStream Extends InputHandler
 
 ClassMethod InChar(char As %String) As %Integer
 {
-    Quit:'$ISOBJECT($$$RedirectInputStream) -1
+    Quit:'$ISOBJECT($Get($$$RedirectInputStream)) -1
     Quit $ASCII($$$RedirectInputStream.Read(1))
 }
 
 ClassMethod InString(size As %Integer, timeout As %Integer) As %String
 {
-    Quit:'$ISOBJECT($$$RedirectInputStream) ""
+    Quit:'$ISOBJECT($Get($$$RedirectInputStream)) ""
     Quit:size="" $$$RedirectInputStream.ReadLine()
     Quit $$$RedirectInputStream.Read(size)
 }

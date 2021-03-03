@@ -46,6 +46,37 @@ Or by zpm
 zpm "test iris-io-redirect"
 ```
 
+## How It Works
+
+It works in 3 steps : 
+
+* Enable the IO Redirect.
+* Call your code wich need Read\Write redirect.
+* Disable IO Redirect and restore previous IO State.
+
+Redirect is controlled by `IORedirect.Redirect` class and need IO handlers classname as parameters.  
+
+```
+Do ##class(IORedirect.Redirect).RedirectIO(<OutputHandler>,<InputHandler>)
+```
+
+`InputHandler` parameter is not mandatory.  
+
+Current available handlers are :
+
+| Handlers | Type | Description | Setup |
+| -------- | ---- | ----------- | ----- |
+| `IORedirect.OutputStream` | Output | Redirect Output to a stream | Set output stream with `Do ##class(IORedirect.OutputStream).SetStream(stream)` |
+| `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : `Do ##class(IORedirect.Redirect).ToGlobal($Name(^\|\|IORedirect))` |
+| `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.Redirect).InputStream(inputStream)` |
+  
+&nbsp;  
+To disable IO Redirecto simply call : 
+
+```
+Do ##class(IORedirect.Redirect).RestoreIO()
+```
+
 ## Samples
 
 ### Redirect Output to Stream
@@ -62,12 +93,18 @@ Write line1
 Write !,line2
 Write !
 Write *line3
-Set stream = ##class(IORedirect.OutputStream).Get()
 
 Do ##class(IORedirect.Redirect).RestoreIO()
 Do ##class(IORedirect.Redirect).ClearConfig()
 
 Do stream.OutputToDevice()
+```
+
+`Do ##class(IORedirect.Redirect).ToStream(stream)` is equivalent to :
+
+```
+Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputStream")
+Do ##class(IORedirect.OutputStream).SetStream(stream)
 ```
 
 ### Redirect Output to a global
@@ -91,6 +128,13 @@ Do ##class(IORedirect.Redirect).ClearConfig()
 
 Zwrite ^||IORedirect
 Kill ^||IORedirect
+```
+
+`Do ##class(IORedirect.Redirect).ToGlobal($Name(^||IORedirect))` is equivalent to :  
+
+```
+Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputGlobal")
+Do ##class(IORedirect.OutputGlobal).SetRedirectLocation($Name(^||IORedirect))
 ```
 
 ### Redirect Input from a stream
