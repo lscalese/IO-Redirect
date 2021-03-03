@@ -1,6 +1,6 @@
 ## IO-REDIRECT
 
-This is a small library to handle IO redirect with ObjectScript.  
+This is a small library to handle IO redirect in ObjectScript.  
 
 Features : 
 
