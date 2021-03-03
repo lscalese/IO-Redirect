@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Export generator="Cache" version="25">
-  <Document name="iris-io-redirect.ZPM">
+  <Document name="io-redirect.ZPM">
     <Module>
-      <Name>iris-io-redirect</Name>
-      <Version>0.0.2</Version>
+      <Name>io-redirect</Name>
+      <Version>0.1.0</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="IORedirect.PKG"/>
