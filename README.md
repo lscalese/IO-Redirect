@@ -4,7 +4,7 @@ This is a small library to handle IO redirect in ObjectScript.
 
 Features : 
 
-* Redirect Output to stream.  
+* Redirect Output to stream\file.  
 * Redirect Output to a global.
 * Redirect Input from a stream.
 
@@ -112,6 +112,17 @@ Do stream.OutputToDevice()
 Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputStream")
 Do ##class(IORedirect.OutputStream).SetStream(stream)
 ```
+
+### Redirect to %Stream.FileCharacter
+
+To redirect to a file you can use  :
+```
+Do ##class(IORedirect.Redirect).ToFileCharacter(filename)
+; some code ...
+Do ##class(IORedirect.Redirect).RestoreIO()
+Set fcs = ##class(IORedirect.OutputStream).Get() ; to retrieve the %Stream.FileCharacter instance.  
+```
+
 
 ### Redirect Output to a global
 

@@ -27,4 +27,9 @@ ClassMethod OutTab() [ Abstract ]
     $$$ThrowStatus($$$ERROR($$$NotImplemented))
 }
 
+ClassMethod OnStopRedirect() As %Status
+{
+    Quit $$$OK
+}
+
 }

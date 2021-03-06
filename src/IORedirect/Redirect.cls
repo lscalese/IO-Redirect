@@ -41,6 +41,8 @@ ClassMethod RestoreIO() As %Status
     Do ##class(%Library.Device).ReDirectIO($$$OldState)
     $$$KillOldStateData
 
+    Do $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
+    
     Do ..SetInputHandler(""), ..SetOuputHandler("")
     
     Quit $$$OK
@@ -52,6 +54,17 @@ ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "SetStream", stream))
     Quit $$$OK
+}
+
+ClassMethod ToFileCharacter(fileName As %String)
+{
+    #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
+    Set dir = ##class(%File).GetDirectory(fileName)
+    Do:'##class(%File).DirectoryExists(dir) ##class(%File).CreateDirectoryChain(dir)
+    Do fcs.LinkToFile(fileName)
+    $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
+
+    Quit $CLASSMETHOD(..#OUTPUTSTREAM, "SetStream", fcs)
 }
 
 /// Enable Output redirection to a global.

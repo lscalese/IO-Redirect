@@ -54,4 +54,14 @@ ClassMethod OutTab()
     Quit
 }
 
+ClassMethod OnStopRedirect() As %Status
+{
+    #dim sc As %Status = $$$OK
+    #dim stream As %Stream.Object = ..Get()
+    If stream.%IsA("%Stream.FileBinary") { 
+        Set sc = stream.%Save()
+    }
+    Quit sc
+}
+
 }

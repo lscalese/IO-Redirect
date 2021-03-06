@@ -21,7 +21,6 @@ Method TestToStream() As %Status
         Set sc = ex.AsStatus()
     }
     
-    Set $NAMESPACE = "USER"
     Do ##class(IORedirect.Redirect).RestoreIO()
 
     Do $$$AssertStatusOK(sc, "Redirect to stream")
@@ -32,6 +31,57 @@ Method TestToStream() As %Status
     }
 
     Set stream = ##class(IORedirect.OutputStream).Get()
+    Do ##class(IORedirect.Redirect).ClearConfig()
+    Do stream.Rewind()
+    
+    Do $$$LogMessage("Check stream result line 1")
+    Do $$$AssertEquals(stream.ReadLine(), line1)
+
+    Do $$$LogMessage("Check stream result line 2")
+    Do $$$AssertEquals(stream.ReadLine(), line2)
+
+    Do $$$LogMessage("Check stream result char")
+    Do $$$AssertEquals(stream.ReadLine(), $Char(line3))
+
+    Quit sc
+}
+
+Method TestToFileCharacter() As %Status
+{
+    Set sc = $$$OK
+    Set line1 = "Stream First line"
+    Set line2 = "Stream second line"
+    Set line3 = 65
+    
+    Set fileName = $zu(12,"temp") _ "fcs.txt"
+    Do:##class(%File).Exists(fileName) ##class(%File).Delete(fileName)
+
+    Do ##class(IORedirect.Redirect).ToFileCharacter(fileName)
+    Try {
+        Write line1
+        Write !,line2
+        Write !
+        Write *line3
+
+    } Catch (ex) {
+        Set sc = ex.AsStatus()
+    }
+    
+    Do ##class(IORedirect.Redirect).RestoreIO()
+
+    Do $$$AssertStatusOK(sc, "Redirect to stream")
+
+    If $$$ISERR(sc) {
+        Do ##class(IORedirect.Redirect).ClearConfig()
+        Quit sc
+    }
+
+    Do $$$LogMessage("File Exists ?")
+    Do $$$AssertEquals(##class(%File).Exists(fileName), 1)
+
+    Set stream = ##class(%Stream.FileCharacter).%New()
+    Do stream.LinkToFile(fileName)
+    
     Do ##class(IORedirect.Redirect).ClearConfig()
     Do stream.Rewind()
     
