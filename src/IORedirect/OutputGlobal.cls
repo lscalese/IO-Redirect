@@ -6,6 +6,7 @@ Class IORedirect.OutputGlobal Extends IORedirect.OutputHandler
 ClassMethod Clear() As %Status
 {
     Kill @$$$RedirectGblName
+    Quit $$$OK
 }
 
 ClassMethod SetRedirectLocation(globalName As %String = {$Name(^||IORedirect)}) As %Status
