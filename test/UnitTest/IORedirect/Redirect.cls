@@ -152,7 +152,6 @@ Method TestIORedirect() As %Status
     Set line3 = "Read line is : "
     Set line4 = inputLine1
 
-    Set stream = ##class(%Stream.GlobalCharacter).%New()
     Kill ^||IORedirect
     
     Do ##class(IORedirect.Redirect).ToGlobal($Name(^||IORedirect))
