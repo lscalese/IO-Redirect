@@ -15,3 +15,8 @@ ROUTINE IORedirect [Type=INC]
 #Define RedirectInputStream     %zIORedirect("InputStream")
 
 #Define ClearConfig             Kill %zIORedirect
+
+#Define InputHandlerUTimeout    ($CLASSMETHOD($$$RedirectInputHandler,"%GetParameter","USETIMETOUT")=1)
+
+#Define CallReadChar(%timeout)          $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InChar", %timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InChar"))
+#Define CallReadString(%size,%timeout)  $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size,%timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size))

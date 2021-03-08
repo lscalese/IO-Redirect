@@ -112,8 +112,8 @@ ClassMethod ClearConfig() As %Status
 ClassMethod labels() [ ProcedureBlock = 0 ]
 {
     Quit
-rchr(c)      Quit:$Get($$$RedirectInputHandler)=""  Quit $CLASSMETHOD($$$RedirectInputHandler,"InChar", c)
-rstr(sz,to)  Quit:$Get($$$RedirectInputHandler)=""  Quit $CLASSMETHOD($$$RedirectInputHandler,"InString", $g(sz), $g(to))
+rchr(c)      Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadChar($Get(c))
+rstr(sz,to)  Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadString($g(sz),$g(to))
 wchr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
 wstr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
 wff()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit

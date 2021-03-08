@@ -3,12 +3,14 @@ Include IORedirect
 Class IORedirect.InputStream Extends InputHandler
 {
 
-ClassMethod InChar(char As %String) As %Integer
+/// Timeout parameter won't used in this subclass.
+ClassMethod InChar() As %Integer
 {
     Quit:'$ISOBJECT($Get($$$RedirectInputStream)) -1
     Quit $ASCII($$$RedirectInputStream.Read(1))
 }
 
+/// Timeout parameter won't used in this subclass.
 ClassMethod InString(size As %Integer, timeout As %Integer) As %String
 {
     Quit:'$ISOBJECT($Get($$$RedirectInputStream)) ""
