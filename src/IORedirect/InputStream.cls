@@ -11,7 +11,7 @@ ClassMethod InChar() As %Integer
 }
 
 /// Timeout parameter won't used in this subclass.
-ClassMethod InString(size As %Integer, timeout As %Integer) As %String
+ClassMethod InString(size As %Integer) As %String
 {
     Quit:'$ISOBJECT($Get($$$RedirectInputStream)) ""
     Quit:size="" $$$RedirectInputStream.ReadLine()
