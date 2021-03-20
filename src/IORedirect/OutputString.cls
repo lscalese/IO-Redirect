@@ -10,7 +10,7 @@ ClassMethod Clear() As %Status
 
 ClassMethod Set(string As %String = "") As %Status
 {
-    Set $$$RedirectString = ""
+    Set $$$RedirectString = string
     Quit $$$OK
 }
 
