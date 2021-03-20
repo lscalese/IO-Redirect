@@ -5,6 +5,7 @@ This is a small library to handle IO redirect in ObjectScript.
 Features : 
 
 * Redirect Output to stream\file.  
+* Redirect Output to string.  
 * Redirect Output to a global.
 * Redirect Input from a stream.
 
@@ -72,9 +73,10 @@ Current available handlers are :
 
 | Handlers | Type | Description | Setup |
 | -------- | ---- | ----------- | ----- |
-| `IORedirect.OutputStream` | Output | Redirect Output to a stream | Set output stream with `Do ##class(IORedirect.OutputStream).SetStream(stream)` |
-| `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : <code>Do ##class(IORedirect.OutputGlobal).SetRedirectLocation($Name(^&#124;&#124;IORedirect))</code> |
-| `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).SetStream(inputStream)` |
+| `IORedirect.OutputStream` | Output | Redirect Output to a stream | Set output stream with `Do ##class(IORedirect.OutputStream).Set(stream)` |
+| `IORedirect.OutputString` | Output | Redirect Output to a string | Init string `Do ##class(IORedirect.OutputString).Set("")` |
+| `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : <code>Do ##class(IORedirect.OutputGlobal).Set($Name(^&#124;&#124;IORedirect))</code> |
+| `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).Set(inputStream)` |
   
 &nbsp;  
 To disable IO Redirect simply call : 
@@ -110,7 +112,17 @@ Do stream.OutputToDevice()
 
 ```
 Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputStream")
-Do ##class(IORedirect.OutputStream).SetStream(stream)
+Do ##class(IORedirect.OutputStream).Set(stream)
+```
+
+### Redirect to %String
+
+To redirect to a simple string  :
+```
+Do ##class(IORedirect.Redirect).ToString()
+; some code ...
+Do ##class(IORedirect.Redirect).RestoreIO()
+Set outputString = ##class(IORedirect.Redirect).Get()
 ```
 
 ### Redirect to %Stream.FileCharacter
@@ -120,7 +132,7 @@ To redirect to a file you can use  :
 Do ##class(IORedirect.Redirect).ToFileCharacter(filename)
 ; some code ...
 Do ##class(IORedirect.Redirect).RestoreIO()
-Set fcs = ##class(IORedirect.OutputStream).Get() ; to retrieve the %Stream.FileCharacter instance.  
+Set fcs = ##class(IORedirect.Redirect).Get() ; to retrieve the %Stream.FileCharacter instance.  
 ```
 
 

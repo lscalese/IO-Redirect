@@ -9,7 +9,12 @@ ClassMethod Clear() As %Status
     Quit $$$OK
 }
 
-ClassMethod SetRedirectLocation(globalName As %String = {$Name(^||IORedirect)}) As %Status
+ClassMethod SetRedirectLocation(globalName As %String = {$Name(^||IORedirect)}) As %Status [ Deprecated ]
+{
+    Quit ..Set(globalName)
+}
+
+ClassMethod Set(globalName As %String = {$Name(^||IORedirect)}) As %Status
 {
     Set $$$RedirectGbl = globalName
     Quit $$$OK

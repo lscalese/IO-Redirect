@@ -30,7 +30,7 @@ Method TestToStream() As %Status
         Quit sc
     }
 
-    Set stream = ##class(IORedirect.OutputStream).Get()
+    Set stream = ##class(IORedirect.Redirect).Get()
     Do ##class(IORedirect.Redirect).ClearConfig()
     Do stream.Rewind()
     
@@ -42,6 +42,49 @@ Method TestToStream() As %Status
 
     Do $$$LogMessage("Check stream result char")
     Do $$$AssertEquals(stream.ReadLine(), $Char(line3))
+
+    Quit sc
+}
+
+Method TestToString() As %Status
+{
+    Set sc = $$$OK
+    Set line1 = "String First line"
+    Set line2 = "String second line"
+    Set line3 = 65
+    
+    Do ##class(IORedirect.Redirect).ToString()
+    
+    Try {
+        Write line1
+        Write !,line2
+        Write !
+        Write *line3
+
+    } Catch (ex) {
+        Set sc = ex.AsStatus()
+    }
+    
+    Do ##class(IORedirect.Redirect).RestoreIO()
+
+    Do $$$AssertStatusOK(sc, "Redirect to string")
+
+    If $$$ISERR(sc) {
+        Do ##class(IORedirect.Redirect).ClearConfig()
+        Quit sc
+    }
+
+    Set outputString = ##class(IORedirect.Redirect).Get()
+    Do ##class(IORedirect.Redirect).ClearConfig()
+    
+    Do $$$LogMessage("Check string result line 1")
+    Do $$$AssertEquals($Piece(outputString, $$$NL, 1), line1)
+
+    Do $$$LogMessage("Check string result line 2")
+    Do $$$AssertEquals($Piece(outputString, $$$NL, 2), line2)
+
+    Do $$$LogMessage("Check string result char")
+    Do $$$AssertEquals($ASCII($Piece(outputString, $$$NL, 3)), line3)
 
     Quit sc
 }

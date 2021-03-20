@@ -6,6 +6,7 @@ ROUTINE IORedirect [Type=INC]
 #Define KillOldStateData        Kill $$$OldState, $$$OldMnemonic, $$$OldIO
 
 #Define RedirectOutputHandler   %zIORedirect("OutputHandler")
+#Define LastOutputHandler       %zIORedirect("LastOutputHandler")
 #Define RedirectInputHandler    %zIORedirect("InputHandler")
 
 #Define RedirectGbl             %zIORedirect("OutputGlobalName")
@@ -13,6 +14,8 @@ ROUTINE IORedirect [Type=INC]
 
 #Define RedirectStream          %zIORedirect("OutStream")
 #Define RedirectInputStream     %zIORedirect("InputStream")
+
+#Define RedirectString          %zIORedirect("OutString")
 
 #Define ClearConfig             Kill %zIORedirect
 

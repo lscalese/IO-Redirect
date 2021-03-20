@@ -18,7 +18,12 @@ ClassMethod InString(size As %Integer) As %String
     Quit $$$RedirectInputStream.Read(size)
 }
 
-ClassMethod SetStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
+ClassMethod SetStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status [ Deprecated ]
+{
+    Quit ..Set(stream)
+}
+
+ClassMethod Set(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     Set $$$RedirectInputStream = stream
     Quit $$$OK

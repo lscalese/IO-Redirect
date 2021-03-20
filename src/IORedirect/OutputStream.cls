@@ -11,7 +11,12 @@ ClassMethod Clear() As %Status
 }
 
 /// Description
-ClassMethod SetStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
+ClassMethod SetStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status [ Deprecated ]
+{
+    Quit ..Set(stream)
+}
+
+ClassMethod Set(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     Set $$$RedirectStream = stream
     Quit $$$OK

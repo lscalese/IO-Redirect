@@ -7,6 +7,8 @@ Parameter OUTPUTSTREAM = "IORedirect.OutputStream";
 
 Parameter OUTPUTGLOBAL = "IORedirect.OutputGlobal";
 
+Parameter OUTPUTSTRING = "IORedirect.OutputString";
+
 Parameter INPUTSTREAM = "IORedirect.InputStream";
 
 /// Class this method to Enable the redirect<br/>
@@ -48,11 +50,27 @@ ClassMethod RestoreIO() As %Status
     Quit $$$OK
 }
 
+/// Return the output value depending the last used output hander:
+/// OutputGlobal : String with the global name.
+/// OutputString : String with the output value.
+/// OutputString : Stream with the output value.
+ClassMethod Get() As %String
+{
+    Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
+}
+
 /// Enable Output Redirection to a Stream object.
 ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
-    $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "SetStream", stream))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "Set", stream))
+    Quit $$$OK
+}
+
+ClassMethod ToString() As %Status
+{
+    $$$QuitOnError(..RedirectIO(..#OUTPUTSTRING))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTRING, "Set", ""))
     Quit $$$OK
 }
 
@@ -71,18 +89,19 @@ ClassMethod ToFileCharacter(fileName As %String)
 ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}) As %Status
 {
     $$$QuitOnError(..RedirectIO(..#OUTPUTGLOBAL))
-    $$$QuitOnError($CLASSMETHOD(..#OUTPUTGLOBAL, "SetRedirectLocation", global))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTGLOBAL, "Set", global))
     Quit $$$OK
 }
 
 ClassMethod InputStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
-    Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "SetStream", stream)
+    Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", stream)
     Quit $$$OK
 }
 
 ClassMethod SetOuputHandler(OutputHandler As %String) As %Status
 {
+    Set:OutputHandler'="" $$$LastOutputHandler = OutputHandler
     Set $$$RedirectOutputHandler = OutputHandler
     Quit $$$OK
 }
