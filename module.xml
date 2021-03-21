@@ -3,7 +3,7 @@
   <Document name="io-redirect.ZPM">
     <Module>
       <Name>io-redirect</Name>
-      <Version>0.3.0</Version>
+      <Version>0.4.0</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="IORedirect.PKG"/>
