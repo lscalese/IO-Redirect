@@ -16,6 +16,7 @@ ROUTINE IORedirect [Type=INC]
 #Define RedirectInputStream     %zIORedirect("InputStream")
 
 #Define RedirectString          %zIORedirect("OutString")
+#Define RedirectInputString     %zIORedirect("InputString")
 
 #Define ClearConfig             Kill %zIORedirect
 

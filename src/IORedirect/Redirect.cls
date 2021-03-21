@@ -11,6 +11,8 @@ Parameter OUTPUTSTRING = "IORedirect.OutputString";
 
 Parameter INPUTSTREAM = "IORedirect.InputStream";
 
+Parameter INPUTSTRING = "IORedirect.InputString";
+
 /// Class this method to Enable the redirect<br/>
 /// OutputHandler must be a subclass name of IORedirect.OutputHandler<br/>
 /// If you want to handle Input, you can fill InputHandler with a subclass name of IORedirect.InputHandler<br/>
@@ -67,6 +69,7 @@ ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter
     Quit $$$OK
 }
 
+/// Enable output redirect to a string.
 ClassMethod ToString() As %Status
 {
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTRING))
@@ -74,6 +77,7 @@ ClassMethod ToString() As %Status
     Quit $$$OK
 }
 
+/// Enable output redirect to a file.
 ClassMethod ToFileCharacter(fileName As %String)
 {
     #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
@@ -93,9 +97,17 @@ ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}) As %Status
     Quit $$$OK
 }
 
+/// Enable Read from a stream.
 ClassMethod InputStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", stream)
+    Quit $$$OK
+}
+
+/// Enable Read from a string.
+ClassMethod InputString(inputString As %String = "") As %Status
+{
+    Do ..SetInputHandler(..#INPUTSTRING), $CLASSMETHOD(..#INPUTSTRING, "Set", inputString)
     Quit $$$OK
 }
 

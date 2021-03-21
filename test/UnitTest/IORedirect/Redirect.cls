@@ -238,4 +238,62 @@ Method TestIORedirect() As %Status
     Quit sc
 }
 
+Method TestInputString() As %Status
+{
+    Set sc = $$$OK
+    
+    Set inputString = "This is my input line 1" _ $$$NL _ $Char(65)
+
+    Set line1 = "This is a test with Input and Output redirect"
+    Set line2 = "Now, we READ something:"
+    Set line3 = "Read line is : "
+    Set line4 = $Piece(inputString, $$$NL, 1)
+
+    Kill ^||IORedirect
+    
+    Do ##class(IORedirect.Redirect).ToGlobal($Name(^||IORedirect))
+    Do ##class(IORedirect.Redirect).InputString(inputString)
+    
+    Try {
+        Write line1
+        Write !,line2
+        READ x:2
+        Write !,line3
+        Write !,x
+        Read *char:2
+
+    } Catch (ex) {
+        Set sc = ex.AsStatus()
+    }
+
+    Do ##class(IORedirect.Redirect).RestoreIO()
+    Do ##class(IORedirect.Redirect).ClearConfig()
+
+    Do $$$AssertStatusOK(sc, "Redirect to stream")
+
+    Quit:$$$ISERR(sc) sc
+    
+    Do $$$LogMessage("Check ^||IORedirect(1) result line 1")
+    Do $$$AssertEquals($Get(^||IORedirect(1)), line1)
+
+    Do $$$LogMessage("Check ^||IORedirect(2) result line 2")
+    Do $$$AssertEquals($Get(^||IORedirect(2)), line2)
+
+    Do $$$LogMessage("Check ^||IORedirect(3) result line 3")
+    Do $$$AssertEquals($Get(^||IORedirect(3)), line3)
+
+    Do $$$LogMessage("Check ^||IORedirect(4) result line 4")
+    Do $$$AssertEquals($Get(^||IORedirect(4)), line4)
+
+    Do $$$LogMessage("Check Input value")
+    Do $$$AssertEquals($Get(x), line4)
+
+    Do $$$LogMessage("Check Input char")
+    Do $$$AssertEquals($Get(char), 65)
+
+    Kill ^||IORedirect
+
+    Quit sc
+}
+
 }
