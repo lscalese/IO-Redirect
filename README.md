@@ -202,7 +202,7 @@ ZWrite ^||IORedirect
 Kill ^||IORedirect
 ```
 
-### Redirecto Input from a string
+### Redirect Input from a string
 
 Similar to redirect from stream, use this line to enable : 
 
