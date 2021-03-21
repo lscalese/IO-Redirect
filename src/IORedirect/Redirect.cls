@@ -55,7 +55,7 @@ ClassMethod RestoreIO() As %Status
 /// Return the output value depending the last used output hander:
 /// OutputGlobal : String with the global name.
 /// OutputString : String with the output value.
-/// OutputString : Stream with the output value.
+/// OutputStream : Stream with the output value.
 ClassMethod Get() As %String
 {
     Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
