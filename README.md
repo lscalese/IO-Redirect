@@ -77,6 +77,7 @@ Current available handlers are :
 | `IORedirect.OutputString` | Output | Redirect Output to a string | Init string `Do ##class(IORedirect.OutputString).Set("")` |
 | `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : <code>Do ##class(IORedirect.OutputGlobal).Set($Name(^&#124;&#124;IORedirect))</code> |
 | `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).Set(inputStream)` |
+| `IORedirect.InputString` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputString).Set(inputString)` |
   
 &nbsp;  
 To disable IO Redirect simply call : 
@@ -199,6 +200,14 @@ Write !,"Read input value in var x is : ", !, x, !
 Write !,"Output global ^||IORedirect : "
 ZWrite ^||IORedirect
 Kill ^||IORedirect
+```
+
+### Redirecto Input from a string
+
+Similar to redirect from stream, use this line to enable : 
+
+```
+Do ##class(IORedirect.Redirect).InputString(inputString)
 ```
   
 ## Source
