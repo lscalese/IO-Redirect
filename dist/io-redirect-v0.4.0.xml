@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2020.4 (Build 524U)" ts="2021-03-27 17:06:28">
+<Class name="IORedirect.InputHandler">
+<Abstract>1</Abstract>
+<IncludeCode>IORedirect</IncludeCode>
+<TimeChanged>65830,61500.885471</TimeChanged>
+<TimeCreated>65830,61500.885471</TimeCreated>
+
+<Parameter name="USETIMEOUT">
+<Default>0</Default>
+</Parameter>
+
+<Method name="InChar">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="InString">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>size:%Integer</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.InputStream">
+<IncludeCode>IORedirect</IncludeCode>
+<Super>InputHandler</Super>
+<TimeChanged>65830,61500.892519</TimeChanged>
+<TimeCreated>65830,61500.892519</TimeCreated>
+
+<Method name="InChar">
+<Description>
+Timeout parameter won't used in this subclass.</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+    Quit:'$ISOBJECT($Get($$$RedirectInputStream)) -1
+    Quit $ASCII($$$RedirectInputStream.Read(1))
+]]></Implementation>
+</Method>
+
+<Method name="InString">
+<Description>
+Timeout parameter won't used in this subclass.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>size:%Integer</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    Quit:'$ISOBJECT($Get($$$RedirectInputStream)) ""
+    Quit:size="" $$$RedirectInputStream.ReadLine()
+    Quit $$$RedirectInputStream.Read(size)
+]]></Implementation>
+</Method>
+
+<Method name="SetStream">
+<Deprecated>1</Deprecated>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ..Set(stream)
+]]></Implementation>
+</Method>
+
+<Method name="Set">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectInputStream = stream
+    Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.InputString">
+<IncludeCode>IORedirect</IncludeCode>
+<Super>InputHandler</Super>
+<TimeChanged>65830,61500.874856</TimeChanged>
+<TimeCreated>65830,61500.874856</TimeCreated>
+
+<Method name="InChar">
+<Description>
+Timeout parameter won't used in this subclass.</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Integer</ReturnType>
+<Implementation><![CDATA[
+    Set char = $ASCII($Extract(..Get()))
+    Do ..Set($Extract(..Get(), 2, *))
+    Quit char
+]]></Implementation>
+</Method>
+
+<Method name="InString">
+<Description>
+Timeout parameter won't used in this subclass.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>size:%Integer</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+    If size '= "" {
+        Set buffer = $Extract(..Get(), 1, size)
+        Do ..Set($Extract(..Get(), size+1, *))
+        Quit buffer
+    }
+
+    Set buffer = $Piece(..Get(), $$$NL, 1)
+    Do ..Set($Piece(..Get(), $$$NL, 2, *))
+    Quit buffer
+]]></Implementation>
+</Method>
+
+<Method name="Get">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[$Get($$$RedirectInputString)
+]]></Implementation>
+</Method>
+
+<Method name="Set">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectInputString = string
+    Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.OutputGlobal">
+<IncludeCode>IORedirect</IncludeCode>
+<Super>IORedirect.OutputHandler</Super>
+<TimeChanged>65830,61500.915898</TimeChanged>
+<TimeCreated>65830,61500.915898</TimeCreated>
+
+<Method name="Clear">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Kill @$$$RedirectGblName
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="SetRedirectLocation">
+<Deprecated>1</Deprecated>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>globalName:%String=$Name(^||IORedirect)</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ..Set(globalName)
+]]></Implementation>
+</Method>
+
+<Method name="Set">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>globalName:%String=$Name(^||IORedirect)</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectGbl = globalName
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Get">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[$$$RedirectGblName
+]]></Implementation>
+</Method>
+
+<Method name="OutChar">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char:%Integer</FormalSpec>
+<Implementation><![CDATA[    Do ..OutString($Char(char))
+]]></Implementation>
+</Method>
+
+<Method name="OutString">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String</FormalSpec>
+<Implementation><![CDATA[
+    Set gbl = $$$RedirectGblName
+    Set:'$Data(@gbl) @gbl = 1
+    Set @gbl@(@gbl) =  $Get(@gbl@(@gbl)) _ string
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutFormFeed">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(12))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutNewLine">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<Implementation><![CDATA[$Increment(@$$$RedirectGblName)
+]]></Implementation>
+</Method>
+
+<Method name="OutTab">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(9))
+    Quit
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.OutputHandler">
+<Description>
+Description</Description>
+<Abstract>1</Abstract>
+<TimeChanged>65830,61500.908725</TimeChanged>
+<TimeCreated>65830,61500.908725</TimeCreated>
+
+<Method name="OutChar">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char:%Integer</FormalSpec>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="OutString">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String</FormalSpec>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="OutFormFeed">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="OutNewLine">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="OutTab">
+<Abstract>1</Abstract>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[    $$$ThrowStatus($$$ERROR($$$NotImplemented))
+]]></Implementation>
+</Method>
+
+<Method name="OnStopRedirect">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.OutputStream">
+<IncludeCode>IORedirect</IncludeCode>
+<Super>IORedirect.OutputHandler</Super>
+<TimeChanged>65830,61500.962915</TimeChanged>
+<TimeCreated>65830,61500.962915</TimeCreated>
+
+<Method name="Clear">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set stream = $$$RedirectStream
+    Do:$Isobject(stream) stream.Clear()
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="SetStream">
+<Description>
+Description</Description>
+<Deprecated>1</Deprecated>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ..Set(stream)
+]]></Implementation>
+</Method>
+
+<Method name="Set">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectStream = stream
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Get">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Stream.Object</ReturnType>
+<Implementation><![CDATA[
+    Quit:$ISOBJECT($Get($$$RedirectStream)) $$$RedirectStream
+    Do ..SetStream()
+    Quit $$$RedirectStream
+]]></Implementation>
+</Method>
+
+<Method name="OutChar">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char:%Integer</FormalSpec>
+<Implementation><![CDATA[
+    Do ..OutString($Char(char))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutString">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String</FormalSpec>
+<Implementation><![CDATA[
+    Do ..Get().Write(string)
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutFormFeed">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(12))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutNewLine">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString(..Get().LineTerminator)
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutTab">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(9))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OnStopRedirect">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    #dim sc As %Status = $$$OK
+    #dim stream As %Stream.Object = ..Get()
+    If stream.%IsA("%Stream.FileBinary") { 
+        Set sc = stream.%Save()
+    }
+    Quit sc
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.OutputString">
+<IncludeCode>IORedirect</IncludeCode>
+<Super>IORedirect.OutputHandler</Super>
+<TimeChanged>65830,61500.937954</TimeChanged>
+<TimeCreated>65830,61500.937954</TimeCreated>
+
+<Method name="Clear">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ..Set("")
+]]></Implementation>
+</Method>
+
+<Method name="Set">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectString = string
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Get">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Stream.Object</ReturnType>
+<Implementation><![CDATA[    Quit $Get($$$RedirectString)
+]]></Implementation>
+</Method>
+
+<Method name="OutChar">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>char:%Integer</FormalSpec>
+<Implementation><![CDATA[
+    Do ..OutString($Char(char))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutString">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>string:%String</FormalSpec>
+<Implementation><![CDATA[
+    Set $$$RedirectString = $$$RedirectString _ string
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutFormFeed">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(12))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutNewLine">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($$$NL)
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OutTab">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    Do ..OutString($Char(9))
+    Quit
+]]></Implementation>
+</Method>
+
+<Method name="OnStopRedirect">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="IORedirect.Redirect">
+<IncludeCode>IORedirect</IncludeCode>
+<TimeChanged>65830,61500.949133</TimeChanged>
+<TimeCreated>65830,61500.949133</TimeCreated>
+
+<Parameter name="OUTPUTSTREAM">
+<Default>IORedirect.OutputStream</Default>
+</Parameter>
+
+<Parameter name="OUTPUTGLOBAL">
+<Default>IORedirect.OutputGlobal</Default>
+</Parameter>
+
+<Parameter name="OUTPUTSTRING">
+<Default>IORedirect.OutputString</Default>
+</Parameter>
+
+<Parameter name="INPUTSTREAM">
+<Default>IORedirect.InputStream</Default>
+</Parameter>
+
+<Parameter name="INPUTSTRING">
+<Default>IORedirect.InputString</Default>
+</Parameter>
+
+<Method name="RedirectIO">
+<Description><![CDATA[
+Class this method to Enable the redirect<br/>
+OutputHandler must be a subclass name of IORedirect.OutputHandler<br/>
+If you want to handle Input, you can fill InputHandler with a subclass name of IORedirect.InputHandler<br/>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>OutputHandler:%String,InputHandler:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$OldIO = $IO
+    Set $$$OldMnemonic = ##class(%Library.Device).GetMnemonicRoutine()
+    Set $$$OldState = ##class(%Library.Device).ReDirectIO()
+
+    Do ..SetInputHandler(InputHandler), ..SetOuputHandler(OutputHandler)
+
+    Use $IO::("^"_$ZNAME)
+
+    Do ##class(%Library.Device).ReDirectIO(1)
+
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="RestoreIO">
+<Description><![CDATA[
+Stop the redirect and restore original IO Setting.<br/>]]></Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Quit:'$Data($$$OldState) $$$OK
+    
+    If $Get($$$OldMnemonic) '= "" {
+        Use $$$OldIO::("^"_$$$OldMnemonic)
+    } Else {
+        Use $$$OldIO
+    }
+
+    Do ##class(%Library.Device).ReDirectIO($$$OldState)
+    $$$KillOldStateData
+
+    Do $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
+    
+    Do ..SetInputHandler(""), ..SetOuputHandler("")
+    
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="Get">
+<Description>
+Return the output value depending the last used output hander:
+OutputGlobal : String with the global name.
+OutputString : String with the output value.
+OutputStream : Stream with the output value.</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[    Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
+]]></Implementation>
+</Method>
+
+<Method name="ToStream">
+<Description>
+Enable Output Redirection to a Stream object.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "Set", stream))
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ToString">
+<Description>
+Enable output redirect to a string.</Description>
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    $$$QuitOnError(..RedirectIO(..#OUTPUTSTRING))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTRING, "Set", ""))
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ToFileCharacter">
+<Description>
+Enable output redirect to a file.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>fileName:%String</FormalSpec>
+<Implementation><![CDATA[
+    #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
+    Set dir = ##class(%File).GetDirectory(fileName)
+    Do:'##class(%File).DirectoryExists(dir) ##class(%File).CreateDirectoryChain(dir)
+    Do fcs.LinkToFile(fileName)
+    $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
+
+    Quit $CLASSMETHOD(..#OUTPUTSTREAM, "SetStream", fcs)
+]]></Implementation>
+</Method>
+
+<Method name="ToGlobal">
+<Description>
+Enable Output redirection to a global.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>global:%String=$Name(^||IORedirect)</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    $$$QuitOnError(..RedirectIO(..#OUTPUTGLOBAL))
+    $$$QuitOnError($CLASSMETHOD(..#OUTPUTGLOBAL, "Set", global))
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="InputStream">
+<Description>
+Enable Read from a stream.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", stream)
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="InputString">
+<Description>
+Enable Read from a string.</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>inputString:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Do ..SetInputHandler(..#INPUTSTRING), $CLASSMETHOD(..#INPUTSTRING, "Set", inputString)
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="SetOuputHandler">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>OutputHandler:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set:OutputHandler'="" $$$LastOutputHandler = OutputHandler
+    Set $$$RedirectOutputHandler = OutputHandler
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetOuputHandler">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[$$$RedirectOutputHandler
+]]></Implementation>
+</Method>
+
+<Method name="SetInputHandler">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>OutputHandler:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set $$$RedirectInputHandler = OutputHandler
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="GetInputHandler">
+<ClassMethod>1</ClassMethod>
+<CodeMode>expression</CodeMode>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[$$$RedirectInputHandler
+]]></Implementation>
+</Method>
+
+<Method name="ClearConfig">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    $$$ClearConfig
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="labels">
+<ClassMethod>1</ClassMethod>
+<ProcedureBlock>0</ProcedureBlock>
+<Implementation><![CDATA[
+    Quit
+rchr(c)      Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadChar($Get(c))
+rstr(sz,to)  Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadString($g(sz),$g(to))
+wchr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
+wstr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
+wff()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit
+wnl()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutNewLine")  Quit
+wtab(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutTab")  Quit
+]]></Implementation>
+</Method>
+</Class>
+</Export>
