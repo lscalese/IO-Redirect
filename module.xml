@@ -4,6 +4,7 @@
     <Module>
       <Name>io-redirect</Name>
       <Version>0.4.1</Version>
+      <Description>Lib to redirecto output to file, stream, string, global and input from stream or string.</Description>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="IORedirect.PKG"/>
