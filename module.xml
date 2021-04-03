@@ -3,10 +3,11 @@
   <Document name="io-redirect.ZPM">
     <Module>
       <Name>io-redirect</Name>
-      <Version>0.4.0</Version>
+      <Version>0.4.1</Version>
       <Packaging>module</Packaging>
       <SourcesRoot>src</SourcesRoot>
       <Resource Name="IORedirect.PKG"/>
+      <Resource Name="IORedirect.INC"/>
       <UnitTest Name="/test" Package="UnitTest.IORedirect" Phase="test"/>
     </Module>
   </Document>
