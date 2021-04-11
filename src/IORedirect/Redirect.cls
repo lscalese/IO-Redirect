@@ -9,7 +9,7 @@ Parameter OUTPUTGLOBAL = "IORedirect.OutputGlobal";
 
 Parameter OUTPUTSTRING = "IORedirect.OutputString";
 
-Parameter OUTPUTNULL = "IORedirect.OutputNull";
+Parameter OUTPUTNULL;
 
 Parameter INPUTSTREAM = "IORedirect.InputStream";
 
@@ -60,6 +60,7 @@ ClassMethod RestoreIO() As %Status
 /// OutputStream : Stream with the output value.
 ClassMethod Get() As %String
 {
+    Quit:$Get($$$LastOutputHandler)="" ""
     Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
 }
 

@@ -1,0 +1,60 @@
+ROUTINE test
+#Include IORedirect
+#include %occStatus
+
+test
+    new
+    s sc = $$$OK
+    h 2
+    Set inputStream = ##class(%Stream.GlobalCharacter).%New()
+    Set inputLine1 = "This is my input line 1"
+    Do inputStream.WriteLine(inputLine1)
+    Do inputStream.Rewind()
+
+    Set line1 = "This is a test with Input and Output redirect"
+    Set line2 = "Now, we READ something:"
+    Set line3 = "Read line is : "
+
+    Set stream = ##class(%Stream.GlobalCharacter).%New()
+    Kill ^||IORedirect
+
+    Do ##class(IORedirect.Redirect).ToGlobal($Name(^||IORedirect))
+    Do ##class(IORedirect.Redirect).InputStream(inputStream)
+    Try {
+        Write line1
+        Write !,line2
+        READ *x:2
+        Write !,line3
+        Write !,x
+    }Catch(ex) {
+        Set sc = ex.AsStatus()
+    }
+    w !,$SYSTEM.Status.GetOneErrorText(sc),!
+    Do ##class(IORedirect.Redirect).RestoreIO()
+    Do ##class(IORedirect.Redirect).ClearConfig()
+
+    Write !,"Read input value in var x is : ", !, x, !
+    Write !,"Output global ^||IORedirect : "
+    ZWrite ^||IORedirect
+    Kill ^||IORedirect
+    quit
+
+Null
+    new 
+    Write "test redirect to null "
+    Do ##class(IORedirect.Redirect).ToNull()
+    Write "test",!,"azer"
+    Do ##class(IORedirect.Redirect).RestoreIO()
+    w !,"after restore"
+    quit
+onlyInput
+    new 
+    Do ##class(IORedirect.Redirect).RedirectIO("")
+    Write "Read from string "
+    Set str = "This is a read string in var str"
+    Do ##class(IORedirect.Redirect).InputString(str)
+    Read x:1
+    Do ##class(IORedirect.Redirect).RestoreIO()
+    Write !,"Read value is : ",x
+    
+    Quit
