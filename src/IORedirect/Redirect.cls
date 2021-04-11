@@ -9,6 +9,8 @@ Parameter OUTPUTGLOBAL = "IORedirect.OutputGlobal";
 
 Parameter OUTPUTSTRING = "IORedirect.OutputString";
 
+Parameter OUTPUTNULL = "IORedirect.OutputNull";
+
 Parameter INPUTSTREAM = "IORedirect.InputStream";
 
 Parameter INPUTSTRING = "IORedirect.InputString";
@@ -45,7 +47,7 @@ ClassMethod RestoreIO() As %Status
     Do ##class(%Library.Device).ReDirectIO($$$OldState)
     $$$KillOldStateData
 
-    Do $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
+    Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
     
     Do ..SetInputHandler(""), ..SetOuputHandler("")
     
@@ -97,10 +99,26 @@ ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}) As %Status
     Quit $$$OK
 }
 
+ClassMethod ToNull() As %Status
+{
+    Quit ..RedirectIO(..#OUTPUTNULL)
+}
+
 /// Enable Read from a stream.
 ClassMethod InputStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
 {
     Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", stream)
+    Quit $$$OK
+}
+
+ClassMethod InputFile(fileName As %String) As %Status
+{
+    If '##class(%File).Exists(fileName) {
+        Quit $$$ERROR(5001, "File not found "_fileName)
+    }
+    #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
+    Do fcs.LinkToFile(fileName)
+    Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", fcs)
     Quit $$$OK
 }
 
@@ -145,11 +163,11 @@ ClassMethod labels() [ ProcedureBlock = 0 ]
     Quit
 rchr(c)      Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadChar($Get(c))
 rstr(sz,to)  Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadString($g(sz),$g(to))
-wchr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
-wstr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
-wff()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit
-wnl()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutNewLine")  Quit
-wtab(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutTab")  Quit
+wchr(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
+wstr(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
+wff()        Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit
+wnl()        Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutNewLine")  Quit
+wtab(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutTab")  Quit
 }
 
 }

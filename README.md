@@ -6,8 +6,9 @@ Features :
 
 * Redirect Output to stream\file.  
 * Redirect Output to string.  
-* Redirect Output to a global.
-* Redirect Input from a stream.
+* Redirect Output to a global.  
+* Cancel output.  
+* Redirect Input from a stream.  
 
 ## Prerequisites
 Make sure you have [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Docker desktop](https://www.docker.com/products/docker-desktop) installed.
@@ -76,6 +77,7 @@ Current available handlers are :
 | `IORedirect.OutputStream` | Output | Redirect Output to a stream | Set output stream with `Do ##class(IORedirect.OutputStream).Set(stream)` |
 | `IORedirect.OutputString` | Output | Redirect Output to a string | Init string `Do ##class(IORedirect.OutputString).Set("")` |
 | `IORedirect.OutputGlobal` | Output | Redirect Output to a global | Set output global name with : <code>Do ##class(IORedirect.OutputGlobal).Set($Name(^&#124;&#124;IORedirect))</code> |
+| `IORedirect.OutputNull` | Output | Cancel the output | Init string `Do ##class(IORedirect.Redirect).ToNull()` |
 | `IORedirect.InputStream` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputStream).Set(inputStream)` |
 | `IORedirect.InputString` | Input | Read Input from a stream | Set input stream with `Do ##class(IORedirect.InputString).Set(inputString)` |
   
