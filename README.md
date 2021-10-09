@@ -7,6 +7,7 @@ Features :
 * Redirect Output to stream\file.  
 * Redirect Output to string.  
 * Redirect Output to a global.  
+* Echo Redirect (Allow to Redirect output to string, stream\file, global with an echo on the current device).  
 * Cancel output.  
 * Redirect Input from a stream.  
 
@@ -90,6 +91,30 @@ Do ##class(IORedirect.Redirect).RestoreIO()
 
 ## Samples
 
+### Redirect to %String
+
+To redirect to a simple string  :
+```
+Do ##class(IORedirect.Redirect).ToString()
+; some code ...
+Do ##class(IORedirect.Redirect).RestoreIO()
+Set outputString = ##class(IORedirect.Redirect).Get()
+```
+
+### Echo Redirect
+
+Redirect the output to a string and echo to the current device : 
+
+```
+Do ##class(IORedirect.Redirect).ToString(1)
+Write "this an echo test"
+Do ##class(IORedirect.Redirect).RestoreIO()
+Set outputString = ##class(IORedirect.Redirect).Get()
+Write "Var outputString : ", outputString
+```
+
+Echo is enabled with the value in argument `Do ##class(IORedirect.Redirect).ToString(1)`  
+
 ### Redirect Output to Stream
 
 ```
@@ -118,15 +143,7 @@ Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputStream")
 Do ##class(IORedirect.OutputStream).Set(stream)
 ```
 
-### Redirect to %String
-
-To redirect to a simple string  :
-```
-Do ##class(IORedirect.Redirect).ToString()
-; some code ...
-Do ##class(IORedirect.Redirect).RestoreIO()
-Set outputString = ##class(IORedirect.Redirect).Get()
-```
+To enable echo redirect use `Do ##class(IORedirect.Redirect).ToStream(stream, 1)`  
 
 ### Redirect to %Stream.FileCharacter
 
@@ -138,6 +155,7 @@ Do ##class(IORedirect.Redirect).RestoreIO()
 Set fcs = ##class(IORedirect.Redirect).Get() ; to retrieve the %Stream.FileCharacter instance.  
 ```
 
+To enable echo redirect use `Do ##class(IORedirect.Redirect).ToFileCharacter(filename, 1)`  
 
 ### Redirect Output to a global
 
@@ -168,6 +186,8 @@ Kill ^||IORedirect
 Do ##class(IORedirect.Redirect).RedirectIO("IORedirect.OutputGlobal")
 Do ##class(IORedirect.OutputGlobal).SetRedirectLocation($Name(^||IORedirect))
 ```
+
+To enable echo redirect use `Do ##class(IORedirect.Redirect).ToGlobal($Name(^||IORedirect), 1)`  
 
 ### Redirect Input from a stream
 
