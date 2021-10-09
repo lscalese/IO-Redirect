@@ -35,6 +35,7 @@ ClassMethod OutString(string As %String)
     Set gbl = $$$RedirectGblName
     Set:'$Data(@gbl) @gbl = 1
     Set @gbl@(@gbl) =  $Get(@gbl@(@gbl)) _ string
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 }
 

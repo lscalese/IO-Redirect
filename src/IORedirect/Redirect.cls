@@ -47,6 +47,8 @@ ClassMethod RestoreIO() As %Status
     Do ##class(%Library.Device).ReDirectIO($$$OldState)
     $$$KillOldStateData
 
+    Set $$$RedirectWithEcho = $$$NO
+
     Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
     
     Do ..SetInputHandler(""), ..SetOuputHandler("")
@@ -65,24 +67,27 @@ ClassMethod Get() As %String
 }
 
 /// Enable Output Redirection to a Stream object.
-ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}) As %Status
+ClassMethod ToStream(stream As %Stream.Object = {##class(%Stream.GlobalCharacter).%New()}, echo As %Boolean = {$$$NO}) As %Status
 {
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "Set", stream))
     Quit $$$OK
 }
 
 /// Enable output redirect to a string.
-ClassMethod ToString() As %Status
+ClassMethod ToString(echo As %Boolean = {$$$NO}) As %Status
 {
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTRING))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTRING, "Set", ""))
     Quit $$$OK
 }
 
 /// Enable output redirect to a file.
-ClassMethod ToFileCharacter(fileName As %String)
+ClassMethod ToFileCharacter(fileName As %String, echo As %Boolean = {$$$NO})
 {
+    Set $$$RedirectWithEcho = echo
     #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
     Set dir = ##class(%File).GetDirectory(fileName)
     Do:'##class(%File).DirectoryExists(dir) ##class(%File).CreateDirectoryChain(dir)
@@ -93,8 +98,9 @@ ClassMethod ToFileCharacter(fileName As %String)
 }
 
 /// Enable Output redirection to a global.
-ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}) As %Status
+ClassMethod ToGlobal(global As %String = {$Name(^||IORedirect)}, echo As %Boolean = {$$$NO}) As %Status
 {
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTGLOBAL))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTGLOBAL, "Set", global))
     Quit $$$OK

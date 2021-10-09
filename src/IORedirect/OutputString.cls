@@ -28,6 +28,7 @@ ClassMethod OutChar(char As %Integer)
 ClassMethod OutString(string As %String)
 {
     Set $$$RedirectString = $$$RedirectString _ string
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 }
 

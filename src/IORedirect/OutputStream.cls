@@ -38,6 +38,7 @@ ClassMethod OutChar(char As %Integer)
 ClassMethod OutString(string As %String)
 {
     Do ..Get().Write(string)
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 }
 

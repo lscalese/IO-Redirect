@@ -24,3 +24,5 @@ ROUTINE IORedirect [Type=INC]
 
 #Define CallReadChar(%timeout)          $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InChar", %timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InChar"))
 #Define CallReadString(%size,%timeout)  $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size,%timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size))
+
+#Define RedirectWithEcho        %zIORedirect("RedirectWithEcho")
