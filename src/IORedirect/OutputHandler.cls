@@ -51,7 +51,7 @@ ClassMethod Echo(out As %String) As %Status
 
     Write out
 
-    If currentIO '= "" {
+    If currentMnemo '= "" {
         Use currentIO::("^"_currentMnemo)
     } Else {
         Use currentIO
