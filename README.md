@@ -107,7 +107,8 @@ Set outputString = ##class(IORedirect.Redirect).Get()
 
 ### Echo Redirect
 
-Redirect the output to a string and echo to the current device : 
+Echo feature allows redirecting the output AND duplicates the write to the current device.
+For example, in a terminal :
 
 ```
 Do ##class(IORedirect.Redirect).ToString(1)
@@ -117,6 +118,7 @@ Set outputString = ##class(IORedirect.Redirect).Get()
 Write "Var outputString : ", outputString
 ```
 
+Redirect the write to a string variable and also write the text in the terminal.  
 Echo is enabled with the value in argument `Do ##class(IORedirect.Redirect).ToString(1)`  
 
 ### Redirect Output to Stream
