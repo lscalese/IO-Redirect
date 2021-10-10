@@ -40,6 +40,10 @@ $ docker-compose up -d
 zpm "install io-redirect"
 ```
 
+### Install without ZPM
+
+For non ZPM user, xml export are available in `dist` directory.   
+
 ## Run Unit Test
 
 In Iris Terminal:
