@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="IRIS" version="26" zv="IRIS for UNIX (Ubuntu Server LTS for x86-64 Containers) 2020.4 (Build 524U)" ts="2021-03-27 17:06:28">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2012.2.3 (Build 903U)" ts="2021-10-10 07:32:35">
+<Routine name="IORedirect" type="INC" timestamp="66027,26900.827431"><![CDATA[
+
+#Define OldIO                   %zIORedirect("OldIO")
+#Define OldMnemonic             %zIORedirect("OldMnemonic")
+#Define OldState                %zIORedirect("OldState")
+#Define KillOldStateData        Kill $$$OldState, $$$OldMnemonic, $$$OldIO
+
+#Define RedirectOutputHandler   %zIORedirect("OutputHandler")
+#Define LastOutputHandler       %zIORedirect("LastOutputHandler")
+#Define RedirectInputHandler    %zIORedirect("InputHandler")
+
+#Define RedirectGbl             %zIORedirect("OutputGlobalName")
+#Define RedirectGblName         $Get($$$RedirectGbl, $Name(^||IORedirect))
+
+#Define RedirectStream          %zIORedirect("OutStream")
+#Define RedirectInputStream     %zIORedirect("InputStream")
+
+#Define RedirectString          %zIORedirect("OutString")
+#Define RedirectInputString     %zIORedirect("InputString")
+
+#Define ClearConfig             Kill %zIORedirect
+
+#Define InputHandlerUTimeout    ($CLASSMETHOD($$$RedirectInputHandler,"%GetParameter","USETIMETOUT")=1)
+
+#Define CallReadChar(%timeout)          $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InChar", %timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InChar"))
+#Define CallReadString(%size,%timeout)  $SELECT($$$InputHandlerUTimeout:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size,%timeout),1:$CLASSMETHOD($$$RedirectInputHandler,"InString",%size))
+
+#Define RedirectWithEcho        %zIORedirect("RedirectWithEcho")
+]]></Routine>
+
+
 <Class name="IORedirect.InputHandler">
 <Abstract>1</Abstract>
 <IncludeCode>IORedirect</IncludeCode>
-<TimeChanged>65830,61500.885471</TimeChanged>
-<TimeCreated>65830,61500.885471</TimeCreated>
+<TimeChanged>66027,26900.743137</TimeChanged>
+<TimeCreated>66027,26900.743137</TimeCreated>
 
 <Parameter name="USETIMEOUT">
 <Default>0</Default>
@@ -32,8 +63,8 @@
 <Class name="IORedirect.InputStream">
 <IncludeCode>IORedirect</IncludeCode>
 <Super>InputHandler</Super>
-<TimeChanged>65830,61500.892519</TimeChanged>
-<TimeCreated>65830,61500.892519</TimeCreated>
+<TimeChanged>66027,26900.769076</TimeChanged>
+<TimeCreated>66027,26900.769076</TimeCreated>
 
 <Method name="InChar">
 <Description>
@@ -83,8 +114,8 @@ Timeout parameter won't used in this subclass.</Description>
 <Class name="IORedirect.InputString">
 <IncludeCode>IORedirect</IncludeCode>
 <Super>InputHandler</Super>
-<TimeChanged>65830,61500.874856</TimeChanged>
-<TimeCreated>65830,61500.874856</TimeCreated>
+<TimeChanged>66027,26900.769044</TimeChanged>
+<TimeCreated>66027,26900.769044</TimeCreated>
 
 <Method name="InChar">
 <Description>
@@ -140,8 +171,8 @@ Timeout parameter won't used in this subclass.</Description>
 <Class name="IORedirect.OutputGlobal">
 <IncludeCode>IORedirect</IncludeCode>
 <Super>IORedirect.OutputHandler</Super>
-<TimeChanged>65830,61500.915898</TimeChanged>
-<TimeCreated>65830,61500.915898</TimeCreated>
+<TimeChanged>66027,26900.779876</TimeChanged>
+<TimeCreated>66027,26900.779876</TimeCreated>
 
 <Method name="Clear">
 <ClassMethod>1</ClassMethod>
@@ -193,6 +224,7 @@ Timeout parameter won't used in this subclass.</Description>
     Set gbl = $$$RedirectGblName
     Set:'$Data(@gbl) @gbl = 1
     Set @gbl@(@gbl) =  $Get(@gbl@(@gbl)) _ string
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 ]]></Implementation>
 </Method>
@@ -226,8 +258,9 @@ Timeout parameter won't used in this subclass.</Description>
 <Description>
 Description</Description>
 <Abstract>1</Abstract>
-<TimeChanged>65830,61500.908725</TimeChanged>
-<TimeCreated>65830,61500.908725</TimeCreated>
+<IncludeCode>IORedirect</IncludeCode>
+<TimeChanged>66027,26900.775832</TimeChanged>
+<TimeCreated>66027,26900.775832</TimeCreated>
 
 <Method name="OutChar">
 <Abstract>1</Abstract>
@@ -272,14 +305,47 @@ Description</Description>
 <Implementation><![CDATA[    Quit $$$OK
 ]]></Implementation>
 </Method>
+
+<Method name="Echo">
+<Description>
+Description</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>out:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    Set currentIO = $IO
+    Set currentMnemo = ##class(%Library.Device).GetMnemonicRoutine()
+    Set currentRedirect = ##class(%Library.Device).ReDirectIO()
+
+    If $Get($$$OldMnemonic) '= "" {
+        Use $$$OldIO::("^"_$$$OldMnemonic)
+    } Else {
+        Use $$$OldIO
+    }
+
+    Do:##class(%Library.Device).ReDirectIO()'=$$$OldState ##class(%Library.Device).ReDirectIO($$$OldState)
+
+    Write out
+
+    If currentIO '= "" {
+        Use currentIO::("^"_currentMnemo)
+    } Else {
+        Use currentIO
+    }
+
+    Do:##class(%Library.Device).ReDirectIO()'=currentRedirect ##class(%Library.Device).ReDirectIO(currentRedirect)
+    
+    Return $$$OK
+]]></Implementation>
+</Method>
 </Class>
 
 
 <Class name="IORedirect.OutputStream">
 <IncludeCode>IORedirect</IncludeCode>
 <Super>IORedirect.OutputHandler</Super>
-<TimeChanged>65830,61500.962915</TimeChanged>
-<TimeCreated>65830,61500.962915</TimeCreated>
+<TimeChanged>66027,26900.80856</TimeChanged>
+<TimeCreated>66027,26900.80856</TimeCreated>
 
 <Method name="Clear">
 <ClassMethod>1</ClassMethod>
@@ -336,6 +402,7 @@ Description</Description>
 <FormalSpec>string:%String</FormalSpec>
 <Implementation><![CDATA[
     Do ..Get().Write(string)
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 ]]></Implementation>
 </Method>
@@ -382,8 +449,8 @@ Description</Description>
 <Class name="IORedirect.OutputString">
 <IncludeCode>IORedirect</IncludeCode>
 <Super>IORedirect.OutputHandler</Super>
-<TimeChanged>65830,61500.937954</TimeChanged>
-<TimeCreated>65830,61500.937954</TimeCreated>
+<TimeChanged>66027,26900.810396</TimeChanged>
+<TimeCreated>66027,26900.810396</TimeCreated>
 
 <Method name="Clear">
 <ClassMethod>1</ClassMethod>
@@ -423,6 +490,7 @@ Description</Description>
 <FormalSpec>string:%String</FormalSpec>
 <Implementation><![CDATA[
     Set $$$RedirectString = $$$RedirectString _ string
+    Do:$Get($$$RedirectWithEcho)=$$$YES ..Echo(string)
     Quit
 ]]></Implementation>
 </Method>
@@ -462,8 +530,8 @@ Description</Description>
 
 <Class name="IORedirect.Redirect">
 <IncludeCode>IORedirect</IncludeCode>
-<TimeChanged>65830,61500.949133</TimeChanged>
-<TimeCreated>65830,61500.949133</TimeCreated>
+<TimeChanged>66027,26900.816275</TimeChanged>
+<TimeCreated>66027,26900.816275</TimeCreated>
 
 <Parameter name="OUTPUTSTREAM">
 <Default>IORedirect.OutputStream</Default>
@@ -475,6 +543,9 @@ Description</Description>
 
 <Parameter name="OUTPUTSTRING">
 <Default>IORedirect.OutputString</Default>
+</Parameter>
+
+<Parameter name="OUTPUTNULL">
 </Parameter>
 
 <Parameter name="INPUTSTREAM">
@@ -525,7 +596,9 @@ Stop the redirect and restore original IO Setting.<br/>]]></Description>
     Do ##class(%Library.Device).ReDirectIO($$$OldState)
     $$$KillOldStateData
 
-    Do $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
+    Set $$$RedirectWithEcho = $$$NO
+
+    Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler, "OnStopRedirect")
     
     Do ..SetInputHandler(""), ..SetOuputHandler("")
     
@@ -541,7 +614,9 @@ OutputString : String with the output value.
 OutputStream : Stream with the output value.</Description>
 <ClassMethod>1</ClassMethod>
 <ReturnType>%String</ReturnType>
-<Implementation><![CDATA[    Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
+<Implementation><![CDATA[
+    Quit:$Get($$$LastOutputHandler)="" ""
+    Quit $CLASSMETHOD($$$LastOutputHandler, "Get")
 ]]></Implementation>
 </Method>
 
@@ -549,9 +624,10 @@ OutputStream : Stream with the output value.</Description>
 <Description>
 Enable Output Redirection to a Stream object.</Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New()</FormalSpec>
+<FormalSpec>stream:%Stream.Object=##class(%Stream.GlobalCharacter).%New(),echo:%Boolean=$$$NO</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTREAM, "Set", stream))
     Quit $$$OK
@@ -562,8 +638,10 @@ Enable Output Redirection to a Stream object.</Description>
 <Description>
 Enable output redirect to a string.</Description>
 <ClassMethod>1</ClassMethod>
+<FormalSpec>echo:%Boolean=$$$NO</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTRING))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTSTRING, "Set", ""))
     Quit $$$OK
@@ -574,8 +652,9 @@ Enable output redirect to a string.</Description>
 <Description>
 Enable output redirect to a file.</Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec>fileName:%String</FormalSpec>
+<FormalSpec>fileName:%String,echo:%Boolean=$$$NO</FormalSpec>
 <Implementation><![CDATA[
+    Set $$$RedirectWithEcho = echo
     #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
     Set dir = ##class(%File).GetDirectory(fileName)
     Do:'##class(%File).DirectoryExists(dir) ##class(%File).CreateDirectoryChain(dir)
@@ -590,12 +669,20 @@ Enable output redirect to a file.</Description>
 <Description>
 Enable Output redirection to a global.</Description>
 <ClassMethod>1</ClassMethod>
-<FormalSpec>global:%String=$Name(^||IORedirect)</FormalSpec>
+<FormalSpec>global:%String=$Name(^||IORedirect),echo:%Boolean=$$$NO</FormalSpec>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
+    Set $$$RedirectWithEcho = echo
     $$$QuitOnError(..RedirectIO(..#OUTPUTGLOBAL))
     $$$QuitOnError($CLASSMETHOD(..#OUTPUTGLOBAL, "Set", global))
     Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="ToNull">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[    Quit ..RedirectIO(..#OUTPUTNULL)
 ]]></Implementation>
 </Method>
 
@@ -607,6 +694,21 @@ Enable Read from a stream.</Description>
 <ReturnType>%Status</ReturnType>
 <Implementation><![CDATA[
     Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", stream)
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="InputFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>fileName:%String</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    If '##class(%File).Exists(fileName) {
+        Quit $$$ERROR(5001, "File not found "_fileName)
+    }
+    #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
+    Do fcs.LinkToFile(fileName)
+    Do ..SetInputHandler(..#INPUTSTREAM), $CLASSMETHOD(..#INPUTSTREAM, "Set", fcs)
     Quit $$$OK
 ]]></Implementation>
 </Method>
@@ -676,11 +778,11 @@ Enable Read from a string.</Description>
     Quit
 rchr(c)      Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadChar($Get(c))
 rstr(sz,to)  Quit:$Get($$$RedirectInputHandler)=""  Quit $$$CallReadString($g(sz),$g(to))
-wchr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
-wstr(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
-wff()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit
-wnl()        Do $CLASSMETHOD($$$RedirectOutputHandler,"OutNewLine")  Quit
-wtab(s)      Do $CLASSMETHOD($$$RedirectOutputHandler,"OutTab")  Quit
+wchr(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutChar",s)  Quit
+wstr(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutString",s)  Quit
+wff()        Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutFormFeed")  Quit
+wnl()        Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutNewLine")  Quit
+wtab(s)      Do:$Get($$$RedirectOutputHandler)'="" $CLASSMETHOD($$$RedirectOutputHandler,"OutTab")  Quit
 ]]></Implementation>
 </Method>
 </Class>
