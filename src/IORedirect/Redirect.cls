@@ -88,10 +88,12 @@ ClassMethod ToString(echo As %Boolean = {$$$NO}) As %Status
 ClassMethod ToFileCharacter(fileName As %String, echo As %Boolean = {$$$NO})
 {
     Set $$$RedirectWithEcho = echo
+    Set exists = ##class(%File).Exists(fileName)
     #dim fcs As %Stream.FileCharacter = ##class(%Stream.FileCharacter).%New()
     Set dir = ##class(%File).GetDirectory(fileName)
     Do:'##class(%File).DirectoryExists(dir) ##class(%File).CreateDirectoryChain(dir)
     Do fcs.LinkToFile(fileName)
+    Do:exists fcs.MoveToEnd()
     $$$QuitOnError(..RedirectIO(..#OUTPUTSTREAM))
 
     Quit $CLASSMETHOD(..#OUTPUTSTREAM, "SetStream", fcs)
