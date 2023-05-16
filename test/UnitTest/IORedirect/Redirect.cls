@@ -1,5 +1,5 @@
 /// Description
-Class PackageName.ClassName Extends %UnitTest.TestCase
+Class UnitTest.IORedirect.Redirect Extends %UnitTest.TestCase
 {
 
 Method TestToStream() As %Status
